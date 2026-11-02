@@ -21,11 +21,15 @@ function validateUrl(value) {
 
   try {
     const parsedUrl = new URL(trimmedUrl);
-    if (!parsedUrl.hostname) {
-      return "올바른 URL 형식을 입력해 주세요.";
+    if (
+      !parsedUrl.hostname.includes(".") &&
+      parsedUrl.hostname !== "localhost" &&
+      !parsedUrl.hostname.startsWith("[")
+    ) {
+      return "올바른 URL 형식으로 입력해 주세요";
     }
   } catch {
-    return "올바른 URL 형식을 입력해 주세요.";
+    return "올바른 URL 형식으로 입력해 주세요";
   }
 
   return null;

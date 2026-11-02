@@ -119,8 +119,7 @@ export async function POST(request) {
         {
           error: {
             code: "INVALID_URL",
-            message:
-              "올바른 URL 형식을 입력해 주세요.",
+            message: "올바른 URL 형식으로 입력해 주세요",
           },
         },
         { status: 400 }
@@ -150,6 +149,22 @@ export async function POST(request) {
             code: "INVALID_URL",
             message:
               "URL은 http:// 또는 https://로 시작해야 합니다.",
+          },
+        },
+        { status: 400 }
+      );
+    }
+
+    if (
+      !parsedUrl.hostname.includes(".") &&
+      parsedUrl.hostname !== "localhost" &&
+      !parsedUrl.hostname.startsWith("[")
+    ) {
+      return NextResponse.json(
+        {
+          error: {
+            code: "INVALID_URL",
+            message: "올바른 URL 형식으로 입력해 주세요",
           },
         },
         { status: 400 }
