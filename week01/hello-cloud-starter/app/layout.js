@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "URL Shortener | Week 02",
+  title: "URL 단축기 | 2주차",
   description: "URL 입력값 검증 실습",
 };
 

@@ -56,21 +56,37 @@ export default function Home() {
 
     setIsLoading(true);
 
-    await new Promise((resolve) => {
-      setTimeout(resolve, 800);
-    });
+    try {
+      const response = await fetch("/api/shorten", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ originalUrl }),
+      });
 
-    setResult("입력값 검증이 완료되었습니다. 아직 Backend API와 연결되진 않았습니다.");
-    setIsLoading(false);
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error?.message || "요청 처리에 실패했습니다.");
+        return;
+      }
+
+      setResult(data.shortUrl);
+    } catch {
+      setError("서버에 연결할 수 없습니다.");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
     <main className="page-shell">
       <section className="url-card" aria-labelledby="page-title">
-        <div className="week-label">CLOUD COMPUTING</div>
+        <div className="week-label">클라우드 컴퓨팅</div>
 
         <div className="intro">
-          <h1 id="page-title">URL Shortener</h1>
+          <h1 id="page-title">URL 단축기</h1>
           <p>
             긴 URL을 입력하고, 안전하게 처리할 수 있는 값인지 확인해 보세요.
           </p>
@@ -92,7 +108,7 @@ export default function Home() {
               disabled={isLoading}
             />
             <button type="submit" disabled={isLoading}>
-              {isLoading ? "Checking..." : "Shorten"}
+              {isLoading ? "생성 중..." : "단축하기"}
             </button>
           </div>
 
@@ -106,7 +122,7 @@ export default function Home() {
             {isLoading && (
               <p className="message message-loading" role="status">
                 <span className="spinner" aria-hidden="true" />
-                입력한 URL을 확인하고 있습니다.
+                단축 URL을 생성하고 있습니다.
               </p>
             )}
 
@@ -121,8 +137,8 @@ export default function Home() {
         <aside className="practice-note">
           <span aria-hidden="true">✓</span>
           <p>
-            이번 주에는 <code>validateUrl</code> 함수를 완성해 입력값 검증을
-            구현합니다.
+            이번 주에는 API 요청 처리 함수를 만들고 화면을 백엔드 API와
+            연결합니다.
           </p>
         </aside>
       </section>
