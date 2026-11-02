@@ -1,13 +1,17 @@
 import { neon } from "@neondatabase/serverless";
 
-export async function saveUrl(shortCode, originalUrl) {
+function getSql() {
   const databaseUrl = process.env.DATABASE_URL;
 
   if (!databaseUrl) {
     throw new Error("DATABASE_URL 환경 변수가 설정되지 않았습니다.");
   }
 
-  const sql = neon(databaseUrl);
+  return neon(databaseUrl);
+}
+
+export async function saveUrl(shortCode, originalUrl) {
+  const sql = getSql();
 
   const existing = await sql`
     SELECT short_code
@@ -43,4 +47,16 @@ export async function saveUrl(shortCode, originalUrl) {
   }
 
   throw new Error("다른 URL과 단축 코드가 충돌했습니다.");
+}
+
+export async function findUrlByShortCode(shortCode) {
+  const sql = getSql();
+  const rows = await sql`
+    SELECT original_url
+    FROM urls
+    WHERE short_code = ${shortCode}
+    LIMIT 1
+  `;
+
+  return rows[0]?.original_url ?? null;
 }
