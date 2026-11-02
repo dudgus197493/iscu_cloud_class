@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { NextResponse } from "next/server";
+import { saveUrl } from "../../../lib/db";
 
 export const runtime = "nodejs";
 
@@ -157,12 +158,12 @@ export async function POST(request) {
 
 
     /*
-     * 6. 단축 URL 생성
+     * 6. 단축 URL 생성 및 저장
      *
      * 모든 검사를 통과했으므로
-     * 단축 코드와 단축 URL을 생성합니다.
+     * 단축 코드를 DB에 저장한 뒤 단축 URL을 생성합니다.
      */
-    const shortCode = createShortCode(originalUrl);
+    const shortCode = await saveUrl(createShortCode(originalUrl), originalUrl);
     const baseUrl = new URL(request.url).origin;
 
 
