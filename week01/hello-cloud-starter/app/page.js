@@ -7,10 +7,26 @@ const MAX_URL_LENGTH = 2048;
 function validateUrl(value) {
   const trimmedUrl = value.trim();
 
-  // TODO 1: 빈 값 검증
-  // TODO 2: 최대 길이 검증
-  // TODO 3: http:// 또는 https:// 시작 여부 검증
-  // TODO 4: 올바른 URL 형식 검증
+  if (!trimmedUrl) {
+    return "URL을 입력해 주세요.";
+  }
+
+  if (trimmedUrl.length > MAX_URL_LENGTH) {
+    return `URL은 ${MAX_URL_LENGTH}자 이하로 입력해 주세요.`;
+  }
+
+  if (!/^https?:\/\//i.test(trimmedUrl)) {
+    return "URL은 http:// 또는 https://로 시작해야 합니다.";
+  }
+
+  try {
+    const parsedUrl = new URL(trimmedUrl);
+    if (!parsedUrl.hostname) {
+      return "올바른 URL 형식을 입력해 주세요.";
+    }
+  } catch {
+    return "올바른 URL 형식을 입력해 주세요.";
+  }
 
   return null;
 }
