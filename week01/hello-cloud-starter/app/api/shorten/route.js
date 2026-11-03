@@ -171,6 +171,19 @@ export async function POST(request) {
       );
     }
 
+    const serviceUrl = new URL(request.url);
+    if (parsedUrl.hostname === serviceUrl.hostname) {
+      return NextResponse.json(
+        {
+          error: {
+            code: "SELF_URL",
+            message: "이 서비스의 주소는 단축할 수 없습니다.",
+          },
+        },
+        { status: 400 }
+      );
+    }
+
 
     /*
      * 6. 단축 URL 생성 및 저장
@@ -179,7 +192,7 @@ export async function POST(request) {
      * 단축 코드를 DB에 저장한 뒤 단축 URL을 생성합니다.
      */
     const shortCode = await saveUrl(createShortCode(originalUrl), originalUrl);
-    const baseUrl = new URL(request.url).origin;
+    const baseUrl = serviceUrl.origin;
 
 
     /*
